@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import ResumeBuilder from './pages/ResumeBuilder';
 import ATSAnalyser from './pages/ATSAnalyser';
 import Templates from './pages/Templates';
-import Pricing from './pages/Pricing';
+
 import Navbar from './components/Navbar';
 
 function PrivateRoute({ children }) {
@@ -30,7 +30,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-          <Route path="/pricing" element={<Pricing />} />
+          
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/builder/:id?" element={<PrivateRoute><ResumeBuilder /></PrivateRoute>} />
           <Route path="/ats" element={<PrivateRoute><ATSAnalyser /></PrivateRoute>} />
