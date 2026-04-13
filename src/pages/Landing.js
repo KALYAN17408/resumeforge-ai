@@ -52,7 +52,7 @@ export default function Landing() {
         {/* Score card preview */}
         <div className="hero-card">
           <div className="hc-header">
-            <div className="hc-avatar">KC</div>
+            <div className="hc-avatar">BC</div>
             <div>
               <div className="hc-name">BATTACHARI</div>
               <div className="hc-role">Software Engineer</div>

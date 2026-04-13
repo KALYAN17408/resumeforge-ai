@@ -31,15 +31,14 @@ function ScoreRing({ score }) {
 }
 
 export default function ATSAnalyser() {
-  const { user, userPlan } = useAuth();
+  const { user } = useAuth();
   const [resumeText, setResumeText] = useState('');
   const [jobDesc, setJobDesc] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const canUse = userPlan !== 'free';
-
+ 
   const analyse = async () => {
     if (!resumeText.trim()) { setError('Please paste your resume text first.'); return; }
     setError(''); setLoading(true); setResult(null);
@@ -112,14 +111,7 @@ Return this exact JSON structure:
         <p>Paste your resume below and get an instant AI-powered breakdown across 5 key hiring dimensions.</p>
       </div>
 
-      {!canUse && (
-        <div className="ats-lock">
-          <div className="lock-icon">🔒</div>
-          <h3>ATS Analyser requires Pro or Max</h3>
-          <p>Upgrade for just $1 (lifetime) to unlock real AI-powered resume scoring.</p>
-          <a href="/pricing" className="btn btn-gold" style={{ marginTop: '1rem', display: 'inline-flex' }}>Upgrade — $1 Lifetime</a>
-        </div>
-      )}
+     
 
       {canUse && (
         <div className="ats-body">
