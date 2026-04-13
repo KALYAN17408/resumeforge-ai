@@ -1,0 +1,51 @@
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 3rem;
+  background: rgba(8,8,16,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.25rem; font-weight: 800;
+  color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.logo-icon { color: var(--accent); font-size: 1.4rem; }
+.nav-links {
+  display: flex; align-items: center; gap: 1.5rem;
+  font-size: 0.9rem;
+}
+.nav-links a { color: var(--text2); transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--text); }
+.nav-user { display: flex; align-items: center; gap: 0.75rem; }
+.nav-name { color: var(--text2); font-size: 0.85rem; }
+.plan-badge {
+  font-size: 0.72rem; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px;
+}
+.plan-badge.free { background: rgba(255,255,255,0.08); color: var(--text2); }
+.plan-badge.pro { background: rgba(124,106,255,0.2); color: var(--accent2); }
+.plan-badge.max { background: rgba(244,200,66,0.2); color: var(--gold); }
+.burger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; padding: 4px;
+}
+.burger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text2); border-radius: 2px; transition: 0.3s;
+}
+@media(max-width: 768px) {
+  .navbar { padding: 1rem 1.5rem; }
+  .burger { display: flex; }
+  .nav-links {
+    display: none; position: fixed;
+    top: 64px; left: 0; right: 0;
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    flex-direction: column; padding: 1.5rem;
+    gap: 1rem; align-items: flex-start;
+  }
+  .nav-links.open { display: flex; }
+  .nav-user { flex-wrap: wrap; }
+}

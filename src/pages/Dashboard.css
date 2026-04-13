@@ -1,0 +1,96 @@
+.dashboard {
+  max-width: 1100px; margin: 0 auto;
+  padding: 6rem 2rem 4rem;
+}
+.dash-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;
+}
+.dash-header h1 { font-size: 2rem; }
+.dash-sub { color: var(--text2); font-size: 0.9rem; margin-top: 4px; }
+.dash-header-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.plan-chip {
+  font-size: 0.8rem; font-weight: 600; padding: 5px 14px; border-radius: 20px;
+}
+.plan-chip.free { background: rgba(255,255,255,0.07); color: var(--text2); }
+.plan-chip.pro { background: rgba(124,106,255,0.15); color: var(--accent2); }
+.plan-chip.max { background: rgba(244,200,66,0.15); color: var(--gold); }
+
+.dash-stats {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 2rem;
+}
+.ds-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+}
+.ds-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--accent2); }
+.ds-label { font-size: 0.8rem; color: var(--text2); margin-top: 4px; }
+
+.dash-quick {
+  display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2.5rem;
+}
+.quick-action {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem 1.25rem;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.quick-action:hover { border-color: rgba(124,106,255,0.3); background: rgba(124,106,255,0.04); }
+.quick-action.disabled { opacity: 0.5; cursor: not-allowed; }
+.qa-icon { font-size: 1.5rem; width: 44px; text-align: center; }
+.qa-text { flex: 1; }
+.qa-text strong { display: block; font-size: 0.95rem; margin-bottom: 2px; }
+.qa-text span { font-size: 0.82rem; color: var(--text2); }
+.qa-arrow { color: var(--text3); font-size: 1.1rem; }
+
+.dash-section { margin-bottom: 2rem; }
+.dash-section-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;
+}
+.dash-section-header h2 { font-size: 1.25rem; }
+
+.resumes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 1.25rem; }
+.resume-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.resume-card:hover { border-color: rgba(124,106,255,0.3); transform: translateY(-2px); }
+.rc-preview { background: var(--bg3); padding: 1rem; height: 200px; display: flex; align-items: center; justify-content: center; }
+.rc-mock { background: #fff; border-radius: 6px; padding: 0.75rem; width: 100%; height: 170px; overflow: hidden; }
+.rcm-header { border-bottom: 2px solid #7c6aff; padding-bottom: 6px; margin-bottom: 6px; }
+.rcm-name { font-size: 0.6rem; font-weight: 800; color: #1a1a1a; }
+.rcm-title { font-size: 0.45rem; color: #666; }
+.rcm-section { font-size: 0.42rem; font-weight: 700; text-transform: uppercase; color: #7c6aff; margin: 6px 0 3px; letter-spacing: 0.5px; }
+.rcm-line { height: 3px; border-radius: 2px; background: #eee; margin: 2px 0; }
+.rcm-line.full { width: 100%; }
+.rcm-line.half { width: 60%; }
+.rc-info { padding: 1rem; }
+.rc-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+.rc-date { font-size: 0.78rem; color: var(--text2); margin-bottom: 8px; }
+.rc-actions { display: flex; gap: 0.5rem; padding: 0 1rem 1rem; }
+
+.empty-state {
+  text-align: center; padding: 4rem 2rem;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text2); font-size: 0.9rem; }
+
+.upgrade-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(135deg, rgba(244,200,66,0.08), rgba(124,106,255,0.08));
+  border: 1px solid rgba(244,200,66,0.2);
+  border-radius: var(--radius); padding: 1.25rem 1.75rem;
+  flex-wrap: wrap; gap: 1rem; margin-top: 2rem;
+}
+.ub-text { display: flex; flex-direction: column; gap: 4px; }
+.ub-text strong { font-size: 0.95rem; }
+.ub-text span { font-size: 0.82rem; color: var(--text2); }
+
+@media(max-width: 700px) {
+  .dash-stats { grid-template-columns: repeat(2,1fr); }
+}
