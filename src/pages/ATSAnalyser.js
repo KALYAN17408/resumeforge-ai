@@ -61,16 +61,10 @@ export default function ATSAnalyser() {
 
     try {
       const prompt = `
-You are an expert ATS (Applicant Tracking System) and resume reviewer.
+You are an expert ATS resume reviewer.
 
-Analyse the following resume and return ONLY valid JSON.
+Return ONLY valid JSON in this format:
 
-Resume:
-${resumeText}
-
-${jobDesc ? `Job Description:\n${jobDesc}` : ''}
-
-Return JSON:
 {
   "totalScore": 0-100,
   "scores": {
@@ -91,25 +85,42 @@ Return JSON:
     "strong": ""
   }
 }
+
+Resume:
+${resumeText}
+
+Job Description:
+${jobDesc}
 `;
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      // 🔥 CALL YOUR NETLIFY FUNCTION (HUGGING FACE BACKEND)
+      const res = await fetch('/.netlify/functions/claude', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: prompt }]
-        })
+        body: JSON.stringify({ prompt })
       });
 
       const json = await res.json();
-      const text = json.content?.[0]?.text || '';
+      const text = json.text || '';
 
-      const clean = text.replace(/```json|```/g, '').trim();
-      const parsed = JSON.parse(clean);
+      // 🧠 SAFE JSON EXTRACTION
+      let parsed;
+      try {
+        const match = text.match(/\{[\s\S]*\}/);
+        parsed = match ? JSON.parse(match[0]) : null;
+      } catch (err) {
+        setError('AI returned invalid format. Try again.');
+        setLoading(false);
+        return;
+      }
+
+      if (!parsed) {
+        setError('No valid response from AI.');
+        setLoading(false);
+        return;
+      }
 
       setResult(parsed);
 
@@ -135,89 +146,62 @@ Return JSON:
     <div className="ats-page">
 
       <div className="ats-hero">
-        <div className="section-label">ATS Analyser</div>
-        <h1>Find out how your resume <span style={{ color: 'var(--accent2)' }}>really performs</span></h1>
-        <p>Paste your resume below and get an instant AI-powered breakdown.</p>
+        <h1>ATS Resume Analyzer</h1>
+        <p>Free AI-powered resume scoring system</p>
       </div>
 
-      {/* INPUT SECTION (always visible now) */}
       <div className="ats-body">
-        <div className="ats-inputs">
 
-          <div className="ats-input-block">
-            <label>Paste Your Resume Text *</label>
-            <textarea
-              value={resumeText}
-              onChange={(e) => setResumeText(e.target.value)}
-              placeholder="Paste resume..."
-              style={{ minHeight: '220px' }}
-            />
-          </div>
+        <textarea
+          placeholder="Paste resume..."
+          value={resumeText}
+          onChange={(e) => setResumeText(e.target.value)}
+          style={{ minHeight: '200px', width: '100%' }}
+        />
 
-          <div className="ats-input-block">
-            <label>Job Description (optional)</label>
-            <textarea
-              value={jobDesc}
-              onChange={(e) => setJobDesc(e.target.value)}
-              placeholder="Paste job description..."
-              style={{ minHeight: '120px' }}
-            />
-          </div>
+        <textarea
+          placeholder="Paste job description (optional)"
+          value={jobDesc}
+          onChange={(e) => setJobDesc(e.target.value)}
+          style={{ minHeight: '120px', width: '100%', marginTop: '10px' }}
+        />
 
-          {error && <div className="ats-error">{error}</div>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-          <button className="btn btn-primary" onClick={analyse} disabled={loading}>
-            {loading ? '⏳ Analysing...' : '🎯 Analyse My Resume'}
-          </button>
+        <button onClick={analyse} disabled={loading}>
+          {loading ? 'Analyzing...' : 'Analyze Resume'}
+        </button>
 
-        </div>
+        {loading && <p>AI is analyzing...</p>}
 
-        {/* LOADING */}
-        {loading && (
-          <div className="ats-loading">
-            <div className="spinner" />
-            <p>AI is analysing your resume...</p>
-          </div>
-        )}
-
-        {/* RESULT */}
         {result && (
           <div className="ats-result">
 
-            <div className="ats-overview">
-              <ScoreRing score={result.totalScore} />
+            <ScoreRing score={result.totalScore} />
 
-              <div className="ats-grade" style={{ color: gradeColor(result.grade) }}>
-                {result.grade}
-              </div>
-            </div>
+            <h2 style={{ color: gradeColor(result.grade) }}>
+              {result.grade}
+            </h2>
 
-            <div className="ats-cards">
-              <div className="ats-card green">
-                <h3>Strengths</h3>
-                <ul>{result.strengths?.map((s, i) => <li key={i}>{s}</li>)}</ul>
-              </div>
+            <h3>Strengths</h3>
+            <ul>
+              {result.strengths?.map((s, i) => <li key={i}>{s}</li>)}
+            </ul>
 
-              <div className="ats-card red">
-                <h3>Improvements</h3>
-                <ul>{result.improvements?.map((s, i) => <li key={i}>{s}</li>)}</ul>
-              </div>
-            </div>
+            <h3>Improvements</h3>
+            <ul>
+              {result.improvements?.map((s, i) => <li key={i}>{s}</li>)}
+            </ul>
 
-            <div className="ats-top-suggestion">
-              <strong>Top Suggestion:</strong>
-              <p>{result.topSuggestion}</p>
-            </div>
+            <h3>Top Suggestion</h3>
+            <p>{result.topSuggestion}</p>
 
-            <button
-              className="btn btn-outline"
-              onClick={() => {
-                setResult(null);
-                setResumeText('');
-                setJobDesc('');
-              }}
-            >
-              Analyse Another Resume
+            <button onClick={() => {
+              setResult(null);
+              setResumeText('');
+              setJobDesc('');
+            }}>
+              Try Another
             </button>
 
           </div>
