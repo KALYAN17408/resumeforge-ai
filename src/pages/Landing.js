@@ -34,7 +34,7 @@ export default function Landing() {
       <section className="hero">
         <div className="hero-glow" />
         <div className="hero-content">
-          <span className="hero-badge">◈ Powered by Claude AI</span>
+          <span className="hero-badge">I</span>
           <h1>
             Your resume.<br />
             <span className="gradient-text">Reimagined.</span>
@@ -54,7 +54,7 @@ export default function Landing() {
           <div className="hc-header">
             <div className="hc-avatar">KC</div>
             <div>
-              <div className="hc-name">Kalyan Chandana</div>
+              <div className="hc-name">BATTACHARI</div>
               <div className="hc-role">Software Engineer</div>
             </div>
             <div className="hc-score">93</div>
@@ -122,7 +122,7 @@ export default function Landing() {
         </div>
         <div className="ats-mock">
           <div className="am-title">ATS Analysis Report</div>
-          <div className="am-name">Kalyan Chandana · Software Engineer</div>
+          <div className="am-name">BATTACHARI · Software Engineer</div>
           {[
             {label:'Keyword Match',score:88,color:'var(--green)'},
             {label:'Format Compatibility',score:95,color:'var(--accent)'},
