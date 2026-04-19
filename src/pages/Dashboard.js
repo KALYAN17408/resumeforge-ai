@@ -6,7 +6,7 @@ import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/fire
 import './Dashboard.css';
 
 export default function Dashboard() {
-  const { user, userPlan } = useAuth();
+  const { user } = useAuth();
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -28,8 +28,6 @@ export default function Dashboard() {
     setResumes(r => r.filter(x => x.id !== id));
   };
 
-  const canCreate = userPlan === 'free' ? resumes.length < 2 : true;
-
   return (
     <div className="dashboard">
       <div className="dash-header">
@@ -38,12 +36,9 @@ export default function Dashboard() {
           <p className="dash-sub">Welcome back, <strong>{user?.displayName}</strong></p>
         </div>
         <div className="dash-header-actions">
-          <span className={`plan-chip ${userPlan}`}>
-            {userPlan === 'free' ? '🆓 Free Plan' : userPlan === 'pro' ? '⭐ Pro — Lifetime' : '👑 Max — Lifetime'}
+          <span className="plan-chip free" style={{ background: 'rgba(34,211,160,0.12)', color: 'var(--green)', border: '1px solid rgba(34,211,160,0.25)' }}>
+            ✓ All Features Free
           </span>
-          {userPlan === 'free' && (
-            <Link to="/pricing" className="btn btn-gold btn-sm">Upgrade to Pro — $1</Link>
-          )}
         </div>
       </div>
 
@@ -54,39 +49,26 @@ export default function Dashboard() {
           <div className="ds-label">Resumes Created</div>
         </div>
         <div className="ds-card">
-          <div className="ds-num">{userPlan === 'free' ? '2' : '∞'}</div>
-          <div className="ds-label">Resume Limit</div>
+          <div className="ds-num">∞</div>
+          <div className="ds-label">No Limit</div>
         </div>
         <div className="ds-card">
-          <div className="ds-num" style={{color:'var(--green)'}}>
-            {userPlan !== 'free' ? '✓' : '—'}
-          </div>
-          <div className="ds-label">AI Features</div>
-        </div>
-        <div className="ds-card">
-          <div className="ds-num" style={{color:'var(--gold)'}}>
-            {userPlan === 'max' ? '✓' : '—'}
-          </div>
+          <div className="ds-num" style={{ color: 'var(--green)' }}>✓</div>
           <div className="ds-label">All Templates</div>
+        </div>
+        <div className="ds-card">
+          <div className="ds-num" style={{ color: 'var(--green)' }}>✓</div>
+          <div className="ds-label">PDF Export</div>
         </div>
       </div>
 
       {/* Quick Actions */}
       <div className="dash-quick">
-        <Link to="/builder" className={`quick-action ${!canCreate ? 'disabled' : ''}`}
-          onClick={e => !canCreate && e.preventDefault()}>
+        <Link to="/builder?template=modern-fresher" className="quick-action">
           <div className="qa-icon">✏️</div>
           <div className="qa-text">
             <strong>New Resume</strong>
-            <span>{canCreate ? 'Start from scratch or a template' : 'Upgrade to create more'}</span>
-          </div>
-          <span className="qa-arrow">→</span>
-        </Link>
-        <Link to="/ats" className="quick-action">
-          <div className="qa-icon">🎯</div>
-          <div className="qa-text">
-            <strong>ATS Analyser</strong>
-            <span>Score your resume with AI</span>
+            <span>Start from scratch or pick a template</span>
           </div>
           <span className="qa-arrow">→</span>
         </Link>
@@ -94,7 +76,15 @@ export default function Dashboard() {
           <div className="qa-icon">🎨</div>
           <div className="qa-text">
             <strong>Browse Templates</strong>
-            <span>Pick a professional design</span>
+            <span>All 6 templates are free to use</span>
+          </div>
+          <span className="qa-arrow">→</span>
+        </Link>
+        <Link to="/ats" className="quick-action">
+          <div className="qa-icon">🔬</div>
+          <div className="qa-text">
+            <strong>ATS Analyser</strong>
+            <span>Coming soon — stay tuned</span>
           </div>
           <span className="qa-arrow">→</span>
         </Link>
@@ -104,9 +94,7 @@ export default function Dashboard() {
       <div className="dash-section">
         <div className="dash-section-header">
           <h2>Your Resumes</h2>
-          {canCreate && (
-            <Link to="/builder" className="btn btn-primary btn-sm">+ New Resume</Link>
-          )}
+          <Link to="/builder?template=modern-fresher" className="btn btn-primary btn-sm">+ New Resume</Link>
         </div>
 
         {loading ? (
@@ -115,8 +103,10 @@ export default function Dashboard() {
           <div className="empty-state">
             <div className="empty-icon">📄</div>
             <h3>No resumes yet</h3>
-            <p>Create your first resume and let AI help you get hired</p>
-            <Link to="/builder" className="btn btn-primary" style={{marginTop:'1rem'}}>Create Your First Resume</Link>
+            <p>Create your first resume using our free builder and beautiful templates</p>
+            <Link to="/builder?template=modern-fresher" className="btn btn-primary" style={{ marginTop: '1rem' }}>
+              Create Your First Resume
+            </Link>
           </div>
         ) : (
           <div className="resumes-grid">
@@ -128,10 +118,10 @@ export default function Dashboard() {
                       <div className="rcm-name">{r.personalInfo?.name || 'Untitled'}</div>
                       <div className="rcm-title">{r.personalInfo?.title || ''}</div>
                     </div>
-                    {['Experience','Skills','Education'].map(s=>(
+                    {['Experience', 'Skills', 'Education'].map(s => (
                       <div key={s}>
                         <div className="rcm-section">{s}</div>
-                        <div className="rcm-line full"/><div className="rcm-line half"/>
+                        <div className="rcm-line full" /><div className="rcm-line half" />
                       </div>
                     ))}
                   </div>
@@ -143,23 +133,19 @@ export default function Dashboard() {
                 </div>
                 <div className="rc-actions">
                   <button className="btn btn-outline btn-sm" onClick={() => navigate(`/builder/${r.id}`)}>Edit</button>
-                  <button className="btn btn-sm" style={{background:'rgba(248,113,113,0.1)',color:'var(--red)',border:'1px solid rgba(248,113,113,0.2)'}} onClick={() => deleteResume(r.id)}>Delete</button>
+                  <button
+                    className="btn btn-sm"
+                    style={{ background: 'rgba(248,113,113,0.1)', color: 'var(--red)', border: '1px solid rgba(248,113,113,0.2)' }}
+                    onClick={() => deleteResume(r.id)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
-
-      {userPlan === 'free' && (
-        <div className="upgrade-banner">
-          <div className="ub-text">
-            <strong>⚡ Unlock the full ResumeForge experience</strong>
-            <span>Get unlimited resumes, all templates, and real AI writing for just $1 — forever.</span>
-          </div>
-          <Link to="/pricing" className="btn btn-gold">Upgrade Now</Link>
-        </div>
-      )}
     </div>
   );
 }

@@ -2,18 +2,19 @@ import React from 'react';
 import './ResumePreview.css';
 
 export default function ResumePreview({ data }) {
-  const { template = 'classic' } = data;
+  const { template = 'modern-fresher' } = data;
   switch (template) {
-    case 'modern': return <ModernTemplate data={data} />;
-    case 'minimal': return <MinimalTemplate data={data} />;
-    case 'executive': return <ExecutiveTemplate data={data} />;
-    case 'creative': return <CreativeTemplate data={data} />;
-    case 'sidebar': return <SidebarTemplate data={data} />;
-    default: return <ClassicTemplate data={data} />;
+    case 'modern-fresher': return <ModernFresherTemplate data={data} />;
+    case 'modern':         return <ModernTemplate data={data} />;
+    case 'minimal':        return <MinimalTemplate data={data} />;
+    case 'executive':      return <ExecutiveTemplate data={data} />;
+    case 'creative':       return <CreativeTemplate data={data} />;
+    case 'sidebar':        return <SidebarTemplate data={data} />;
+    default:               return <ClassicTemplate data={data} />;
   }
 }
 
-/* ── SHARED HELPERS ── */
+/* ── Shared helpers ── */
 function BulletLines({ text }) {
   if (!text) return null;
   return (
@@ -25,23 +26,125 @@ function BulletLines({ text }) {
   );
 }
 
+function safe(arr) { return Array.isArray(arr) ? arr : []; }
+
 /* ══════════════════════════════════════════
-   1. CLASSIC TEMPLATE
+   1. MODERN FRESHER PROFESSIONAL  (default)
+══════════════════════════════════════════ */
+function ModernFresherTemplate({ data }) {
+  const { personalInfo: p = {}, summary } = data;
+  const experience = safe(data.experience);
+  const education  = safe(data.education);
+  const skills     = safe(data.skills);
+  const projects   = safe(data.projects);
+
+  return (
+    <div className="rp rp-fresher">
+      {/* Header */}
+      <div className="rpf-header">
+        <h1>{p.name || 'Full Name'}</h1>
+        {p.title && <div className="rpf-subtitle">{p.title}</div>}
+        <div className="rpf-contact">
+          {[p.email, p.phone, p.location, p.linkedin, p.website].filter(Boolean).join(' · ')}
+        </div>
+      </div>
+
+      {/* Career Objective */}
+      {summary && (
+        <div className="rpf-section">
+          <div className="rpf-section-title">Career Objective</div>
+          <p className="rp-text">{summary}</p>
+        </div>
+      )}
+
+      {/* Education */}
+      {education.length > 0 && (
+        <div className="rpf-section">
+          <div className="rpf-section-title">Education</div>
+          {education.map((e, i) => (
+            <div className="rpf-item" key={`edu-${i}`}>
+              <div className="rpf-item-row">
+                <strong>{e.degree}</strong>
+                <span className="rp-date">{e.year}</span>
+              </div>
+              <div className="rpf-sub">{e.school}{e.gpa ? ` — ${e.gpa}` : ''}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Projects */}
+      {projects.length > 0 && (
+        <div className="rpf-section">
+          <div className="rpf-section-title">Projects</div>
+          {projects.map((pr, i) => (
+            <div className="rpf-item" key={`proj-${i}`}>
+              <div className="rpf-item-row">
+                <strong>{pr.name}</strong>
+                {pr.link && <span className="rp-date">{pr.link}</span>}
+              </div>
+              {pr.tech && <div className="rpf-sub">{pr.tech}</div>}
+              <BulletLines text={pr.description} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Internships / Experience */}
+      {experience.length > 0 && (
+        <div className="rpf-section">
+          <div className="rpf-section-title">Internships / Experience</div>
+          {experience.map((e, i) => (
+            <div className="rpf-item" key={`exp-${i}`}>
+              <div className="rpf-item-row">
+                <strong>{e.role}</strong>
+                <span className="rp-date">{e.duration}</span>
+              </div>
+              <div className="rpf-sub">{e.company}</div>
+              <BulletLines text={e.description} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Technical Skills */}
+      {skills.length > 0 && (
+        <div className="rpf-section">
+          <div className="rpf-section-title">Technical Skills</div>
+          <div className="rpf-skills">
+            {skills.map((s, i) => (
+              <span className="rpf-skill" key={`skill-${i}-${s}`}>{s}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Declaration */}
+      <div className="rpf-section">
+        <div className="rpf-section-title">Declaration</div>
+        <p className="rp-text" style={{ fontStyle: 'italic', fontSize: '8.5pt' }}>
+          I hereby declare that the information provided above is true and correct to the best of my knowledge and belief.
+        </p>
+        <div style={{ marginTop: '20pt', fontSize: '9pt', color: '#333' }}>
+          <div>Date: ___________</div>
+          <div style={{ marginTop: '4pt' }}>Place: ___________</div>
+          <div style={{ marginTop: '16pt' }}>{p.name || 'Signature'}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════
+   2. CLASSIC (Simple Clean)
 ══════════════════════════════════════════ */
 function ClassicTemplate({ data }) {
-  const {
-    personalInfo: p = {},
-    summary,
-    experience = [],
-    education  = [],
-    skills     = [],
-    projects   = [],
-  } = data;
+  const { personalInfo: p = {}, summary } = data;
+  const experience = safe(data.experience);
+  const education  = safe(data.education);
+  const skills     = safe(data.skills);
+  const projects   = safe(data.projects);
 
-  const safeSkills     = Array.isArray(skills)     ? skills     : [];
-  const safeExperience = Array.isArray(experience) ? experience : [];
-  const safeEducation  = Array.isArray(education)  ? education  : [];
-  const safeProjects   = Array.isArray(projects)   ? projects   : [];
   return (
     <div className="rp rp-classic">
       <div className="rpc-header">
@@ -63,10 +166,10 @@ function ClassicTemplate({ data }) {
         </div>
       )}
 
-      {safeExperience.length > 0 && (
+      {experience.length > 0 && (
         <div className="rp-section">
           <div className="rp-section-title">Experience</div>
-          {safeExperience.map((e, i) => (
+          {experience.map((e, i) => (
             <div className="rp-item" key={`exp-${i}`}>
               <div className="rp-item-header">
                 <div><strong>{e.role}</strong>{e.company ? ` — ${e.company}` : ''}</div>
@@ -78,10 +181,10 @@ function ClassicTemplate({ data }) {
         </div>
       )}
 
-      {safeEducation.length > 0 && (
+      {education.length > 0 && (
         <div className="rp-section">
           <div className="rp-section-title">Education</div>
-          {safeEducation.map((e, i) => (
+          {education.map((e, i) => (
             <div className="rp-item" key={`edu-${i}`}>
               <div className="rp-item-header">
                 <div><strong>{e.degree}</strong>{e.school ? ` — ${e.school}` : ''}</div>
@@ -92,21 +195,21 @@ function ClassicTemplate({ data }) {
         </div>
       )}
 
-      {safeSkills.length > 0 ? (
+      {skills.length > 0 && (
         <div className="rp-section">
           <div className="rp-section-title">Skills</div>
           <div className="rp-skills-wrap">
-            {safeSkills.map((s, i) => (
+            {skills.map((s, i) => (
               <span className="rp-skill" key={`skill-${i}-${s}`}>{s}</span>
             ))}
           </div>
         </div>
-      ) : null}
+      )}
 
-      {safeProjects.length > 0 && (
+      {projects.length > 0 && (
         <div className="rp-section">
           <div className="rp-section-title">Projects</div>
-          {safeProjects.map((proj, i) => (
+          {projects.map((proj, i) => (
             <div className="rp-item" key={`proj-${i}`}>
               <div className="rp-item-header">
                 <div><strong>{proj.name}</strong>{proj.tech ? ` · ${proj.tech}` : ''}</div>
@@ -122,14 +225,15 @@ function ClassicTemplate({ data }) {
 }
 
 /* ══════════════════════════════════════════
-   2. MODERN TEMPLATE
+   3. MODERN EDGE
 ══════════════════════════════════════════ */
 function ModernTemplate({ data }) {
-  const { personalInfo: p = {}, summary, experience = [], education = [], skills = [], projects = [] } = data;
-  const safeSkills     = Array.isArray(skills)     ? skills     : [];
-  const safeExperience = Array.isArray(experience) ? experience : [];
-  const safeEducation  = Array.isArray(education)  ? education  : [];
-  const safeProjects   = Array.isArray(projects)   ? projects   : [];
+  const { personalInfo: p = {}, summary } = data;
+  const experience = safe(data.experience);
+  const education  = safe(data.education);
+  const skills     = safe(data.skills);
+  const projects   = safe(data.projects);
+
   return (
     <div className="rp rp-modern">
       <div className="rpm-header">
@@ -153,10 +257,10 @@ function ModernTemplate({ data }) {
         </div>
       )}
 
-      {safeExperience.length > 0 && (
+      {experience.length > 0 && (
         <div className="rp-section rpm-section">
           <div className="rpm-section-title">Experience</div>
-          {safeExperience.map((e, i) => (
+          {experience.map((e, i) => (
             <div className="rpm-item" key={`exp-${i}`}>
               <div className="rpm-dot" />
               <div className="rpm-item-body">
@@ -172,10 +276,10 @@ function ModernTemplate({ data }) {
         </div>
       )}
 
-      {safeEducation.length > 0 && (
+      {education.length > 0 && (
         <div className="rp-section rpm-section">
           <div className="rpm-section-title">Education</div>
-          {safeEducation.map((e, i) => (
+          {education.map((e, i) => (
             <div className="rpm-item" key={`edu-${i}`}>
               <div className="rpm-dot" />
               <div className="rpm-item-body">
@@ -190,21 +294,21 @@ function ModernTemplate({ data }) {
         </div>
       )}
 
-      {safeSkills.length > 0 && (
+      {skills.length > 0 && (
         <div className="rp-section rpm-section">
           <div className="rpm-section-title">Skills</div>
           <div className="rp-skills-wrap">
-            {safeSkills.map((s, i) => (
+            {skills.map((s, i) => (
               <span className="rpm-skill" key={`skill-${i}-${s}`}>{s}</span>
             ))}
           </div>
         </div>
       )}
 
-      {safeProjects.length > 0 && (
+      {projects.length > 0 && (
         <div className="rp-section rpm-section">
           <div className="rpm-section-title">Projects</div>
-          {safeProjects.map((pr, i) => (
+          {projects.map((pr, i) => (
             <div className="rpm-item" key={`proj-${i}`}>
               <div className="rpm-dot" />
               <div className="rpm-item-body">
@@ -223,14 +327,15 @@ function ModernTemplate({ data }) {
 }
 
 /* ══════════════════════════════════════════
-   3. MINIMAL TEMPLATE
+   4. MINIMAL
 ══════════════════════════════════════════ */
 function MinimalTemplate({ data }) {
-  const { personalInfo: p = {}, summary, experience = [], education = [], skills = [], projects = [] } = data;
-  const safeSkills     = Array.isArray(skills)     ? skills     : [];
-  const safeExperience = Array.isArray(experience) ? experience : [];
-  const safeEducation  = Array.isArray(education)  ? education  : [];
-  const safeProjects   = Array.isArray(projects)   ? projects   : [];
+  const { personalInfo: p = {}, summary } = data;
+  const experience = safe(data.experience);
+  const education  = safe(data.education);
+  const skills     = safe(data.skills);
+  const projects   = safe(data.projects);
+
   return (
     <div className="rp rp-minimal">
       <div className="rpmn-header">
@@ -242,17 +347,14 @@ function MinimalTemplate({ data }) {
       </div>
 
       {summary && (
-        <>
-          <div className="rpmn-divider" />
-          <p className="rp-text rpmn-summary">{summary}</p>
-        </>
+        <><div className="rpmn-divider" /><p className="rp-text rpmn-summary">{summary}</p></>
       )}
 
-      {safeExperience.length > 0 && (
+      {experience.length > 0 && (
         <>
           <div className="rpmn-divider" />
           <div className="rpmn-section-title">EXPERIENCE</div>
-          {safeExperience.map((e, i) => (
+          {experience.map((e, i) => (
             <div className="rpmn-item" key={`exp-${i}`}>
               <div className="rpmn-item-top">
                 <span className="rpmn-role">{e.role}</span>
@@ -265,11 +367,11 @@ function MinimalTemplate({ data }) {
         </>
       )}
 
-      {safeEducation.length > 0 && (
+      {education.length > 0 && (
         <>
           <div className="rpmn-divider" />
           <div className="rpmn-section-title">EDUCATION</div>
-          {safeEducation.map((e, i) => (
+          {education.map((e, i) => (
             <div className="rpmn-item" key={`edu-${i}`}>
               <div className="rpmn-item-top">
                 <span className="rpmn-role">{e.degree}</span>
@@ -281,19 +383,19 @@ function MinimalTemplate({ data }) {
         </>
       )}
 
-      {safeSkills.length > 0 && (
+      {skills.length > 0 && (
         <>
           <div className="rpmn-divider" />
           <div className="rpmn-section-title">SKILLS</div>
-          <p className="rp-text">{safeSkills.join(' · ')}</p>
+          <p className="rp-text">{skills.join(' · ')}</p>
         </>
       )}
 
-      {safeProjects.length > 0 && (
+      {projects.length > 0 && (
         <>
           <div className="rpmn-divider" />
           <div className="rpmn-section-title">PROJECTS</div>
-          {safeProjects.map((pr, i) => (
+          {projects.map((pr, i) => (
             <div className="rpmn-item" key={`proj-${i}`}>
               <div className="rpmn-item-top">
                 <span className="rpmn-role">{pr.name}</span>
@@ -310,14 +412,15 @@ function MinimalTemplate({ data }) {
 }
 
 /* ══════════════════════════════════════════
-   4. EXECUTIVE TEMPLATE
+   5. EXECUTIVE
 ══════════════════════════════════════════ */
 function ExecutiveTemplate({ data }) {
-  const { personalInfo: p = {}, summary, experience = [], education = [], skills = [], projects = [] } = data;
-  const safeSkills     = Array.isArray(skills)     ? skills     : [];
-  const safeExperience = Array.isArray(experience) ? experience : [];
-  const safeEducation  = Array.isArray(education)  ? education  : [];
-  const safeProjects   = Array.isArray(projects)   ? projects   : [];
+  const { personalInfo: p = {}, summary } = data;
+  const experience = safe(data.experience);
+  const education  = safe(data.education);
+  const skills     = safe(data.skills);
+  const projects   = safe(data.projects);
+
   return (
     <div className="rp rp-executive">
       <div className="rpe-header">
@@ -338,10 +441,10 @@ function ExecutiveTemplate({ data }) {
         </div>
       )}
 
-      {safeExperience.length > 0 && (
+      {experience.length > 0 && (
         <div className="rpe-section">
           <div className="rpe-section-title">Professional Experience</div>
-          {safeExperience.map((e, i) => (
+          {experience.map((e, i) => (
             <div className="rpe-item" key={`exp-${i}`}>
               <div className="rpe-item-header">
                 <div className="rpe-role">{e.role}</div>
@@ -353,10 +456,10 @@ function ExecutiveTemplate({ data }) {
         </div>
       )}
 
-      {safeEducation.length > 0 && (
+      {education.length > 0 && (
         <div className="rpe-section">
           <div className="rpe-section-title">Education</div>
-          {safeEducation.map((e, i) => (
+          {education.map((e, i) => (
             <div className="rpe-item" key={`edu-${i}`}>
               <div className="rpe-item-header">
                 <div className="rpe-role">{e.degree}</div>
@@ -367,19 +470,19 @@ function ExecutiveTemplate({ data }) {
         </div>
       )}
 
-      {safeSkills.length > 0 && (
+      {skills.length > 0 && (
         <div className="rpe-section">
           <div className="rpe-section-title">Core Competencies</div>
           <div className="rpe-skills">
-            {safeSkills.map((s, i) => <span key={`skill-${i}-${s}`}>{s}</span>)}
+            {skills.map((s, i) => <span key={`skill-${i}-${s}`}>{s}</span>)}
           </div>
         </div>
       )}
 
-      {safeProjects.length > 0 && (
+      {projects.length > 0 && (
         <div className="rpe-section">
           <div className="rpe-section-title">Notable Projects</div>
-          {safeProjects.map((pr, i) => (
+          {projects.map((pr, i) => (
             <div className="rpe-item" key={`proj-${i}`}>
               <div className="rpe-item-header">
                 <div className="rpe-role">{pr.name}</div>
@@ -395,14 +498,15 @@ function ExecutiveTemplate({ data }) {
 }
 
 /* ══════════════════════════════════════════
-   5. CREATIVE TEMPLATE
+   6. CREATIVE GRADIENT
 ══════════════════════════════════════════ */
 function CreativeTemplate({ data }) {
-  const { personalInfo: p = {}, summary, experience = [], education = [], skills = [], projects = [] } = data;
-  const safeSkills     = Array.isArray(skills)     ? skills     : [];
-  const safeExperience = Array.isArray(experience) ? experience : [];
-  const safeEducation  = Array.isArray(education)  ? education  : [];
-  const safeProjects   = Array.isArray(projects)   ? projects   : [];
+  const { personalInfo: p = {}, summary } = data;
+  const experience = safe(data.experience);
+  const education  = safe(data.education);
+  const skills     = safe(data.skills);
+  const projects   = safe(data.projects);
+
   return (
     <div className="rp rp-creative">
       <div className="rpct-header">
@@ -425,10 +529,10 @@ function CreativeTemplate({ data }) {
         </div>
       )}
 
-      {safeExperience.length > 0 && (
+      {experience.length > 0 && (
         <div className="rpct-section">
           <div className="rpct-section-label">Experience</div>
-          {safeExperience.map((e, i) => (
+          {experience.map((e, i) => (
             <div className="rpct-item" key={`exp-${i}`}>
               <div className="rpct-item-accent" />
               <div className="rpct-item-body">
@@ -441,10 +545,10 @@ function CreativeTemplate({ data }) {
         </div>
       )}
 
-      {safeEducation.length > 0 && (
+      {education.length > 0 && (
         <div className="rpct-section">
           <div className="rpct-section-label">Education</div>
-          {safeEducation.map((e, i) => (
+          {education.map((e, i) => (
             <div className="rpct-item" key={`edu-${i}`}>
               <div className="rpct-item-accent" />
               <div className="rpct-item-body">
@@ -456,19 +560,19 @@ function CreativeTemplate({ data }) {
         </div>
       )}
 
-      {safeSkills.length > 0 && (
+      {skills.length > 0 && (
         <div className="rpct-section">
           <div className="rpct-section-label">Skills</div>
           <div className="rpct-skills">
-            {safeSkills.map((s, i) => <span key={`skill-${i}-${s}`}>{s}</span>)}
+            {skills.map((s, i) => <span key={`skill-${i}-${s}`}>{s}</span>)}
           </div>
         </div>
       )}
 
-      {safeProjects.length > 0 && (
+      {projects.length > 0 && (
         <div className="rpct-section">
           <div className="rpct-section-label">Projects</div>
-          {safeProjects.map((pr, i) => (
+          {projects.map((pr, i) => (
             <div className="rpct-item" key={`proj-${i}`}>
               <div className="rpct-item-accent" />
               <div className="rpct-item-body">
@@ -485,14 +589,15 @@ function CreativeTemplate({ data }) {
 }
 
 /* ══════════════════════════════════════════
-   6. SIDEBAR TEMPLATE
+   7. SIDEBAR (Two Column Professional)
 ══════════════════════════════════════════ */
 function SidebarTemplate({ data }) {
-  const { personalInfo: p = {}, summary, experience = [], education = [], skills = [], projects = [] } = data;
-  const safeSkills     = Array.isArray(skills)     ? skills     : [];
-  const safeExperience = Array.isArray(experience) ? experience : [];
-  const safeEducation  = Array.isArray(education)  ? education  : [];
-  const safeProjects   = Array.isArray(projects)   ? projects   : [];
+  const { personalInfo: p = {}, summary } = data;
+  const experience = safe(data.experience);
+  const education  = safe(data.education);
+  const skills     = safe(data.skills);
+  const projects   = safe(data.projects);
+
   return (
     <div className="rp rp-sidebar">
       <div className="rps-left">
@@ -506,24 +611,24 @@ function SidebarTemplate({ data }) {
         {p.location && <div className="rps-contact-item">{p.location}</div>}
         {p.linkedin && <div className="rps-contact-item">{p.linkedin}</div>}
 
-        {safeSkills.length > 0 && (
+        {skills.length > 0 && (
           <>
-            <div className="rps-section-title" style={{marginTop:'1rem'}}>Skills</div>
-            {safeSkills.map((s, i) => (
+            <div className="rps-section-title" style={{ marginTop: '1rem' }}>Skills</div>
+            {skills.map((s, i) => (
               <div className="rps-skill-row" key={`skill-${i}-${s}`}>
                 <span>{s}</span>
                 <div className="rps-skill-bar">
-                  <div className="rps-skill-fill" style={{width:`${70 + (i % 4) * 8}%`}} />
+                  <div className="rps-skill-fill" style={{ width: `${70 + (i % 4) * 8}%` }} />
                 </div>
               </div>
             ))}
           </>
         )}
 
-        {safeEducation.length > 0 && (
+        {education.length > 0 && (
           <>
-            <div className="rps-section-title" style={{marginTop:'1rem'}}>Education</div>
-            {safeEducation.map((e, i) => (
+            <div className="rps-section-title" style={{ marginTop: '1rem' }}>Education</div>
+            {education.map((e, i) => (
               <div className="rps-edu-item" key={`edu-${i}`}>
                 <div className="rps-edu-degree">{e.degree}</div>
                 <div className="rps-edu-school">{e.school}</div>
@@ -542,10 +647,10 @@ function SidebarTemplate({ data }) {
           </div>
         )}
 
-        {safeExperience.length > 0 && (
+        {experience.length > 0 && (
           <div className="rps-r-section">
             <div className="rps-r-title">Experience</div>
-            {safeExperience.map((e, i) => (
+            {experience.map((e, i) => (
               <div className="rps-r-item" key={`exp-${i}`}>
                 <div className="rps-r-item-head">
                   <strong>{e.role}</strong>
@@ -558,10 +663,10 @@ function SidebarTemplate({ data }) {
           </div>
         )}
 
-        {safeProjects.length > 0 && (
+        {projects.length > 0 && (
           <div className="rps-r-section">
             <div className="rps-r-title">Projects</div>
-            {safeProjects.map((pr, i) => (
+            {projects.map((pr, i) => (
               <div className="rps-r-item" key={`proj-${i}`}>
                 <div className="rps-r-item-head">
                   <strong>{pr.name}</strong>
