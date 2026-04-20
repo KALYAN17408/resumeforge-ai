@@ -1,27 +1,34 @@
 import React from "react";
+import "./Upgrade.css";
 
 export default function Upgrade() {
   return (
-    <div style={{
-      minHeight: "80vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      textAlign: "center",
-      padding: "40px"
-    }}>
-      <div>
-        <h1 style={{fontSize:"42px", marginBottom:"20px"}}>
-          🎉 No Upgrade Needed
-        </h1>
+    <div className="upgrade-container">
+      <div className="upgrade-card">
+        <h1>🎉 ResumeForge AI is FREE Forever</h1>
 
-        <p style={{fontSize:"20px", opacity:0.8}}>
-          ResumeForge is now <b>FREE FOREVER</b>.
+        <p className="big-text">
+          You do NOT need to upgrade.
         </p>
 
-        <p style={{marginTop:"10px", opacity:0.7}}>
-          All resume templates and features are unlocked.
+        <p className="sub-text">
+          All resume templates are completely free.
+          <br />
+          Unlimited resumes. No subscriptions. No payments.
         </p>
+
+        <div className="features">
+          <div className="feature">✔ 17+ Classic Resume Templates</div>
+          <div className="feature">✔ Unlimited Resume Downloads</div>
+          <div className="feature">✔ Lifetime Free Access</div>
+        </div>
+
+        <button
+          className="back-btn"
+          onClick={() => (window.location.href = "/dashboard")}
+        >
+          Go Back to Dashboard
+        </button>
       </div>
     </div>
   );
