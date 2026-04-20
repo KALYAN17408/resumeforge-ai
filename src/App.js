@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import ResumeBuilder from './pages/ResumeBuilder';
 import ATSAnalyser from './pages/ATSAnalyser';
 import Templates from './pages/Templates';
-import Upgrade from "./pages/Upgrade";
+
 
 import Navbar from './components/Navbar';
 
@@ -36,7 +36,7 @@ export default function App() {
           <Route path="/builder/:id?" element={<PrivateRoute><ResumeBuilder /></PrivateRoute>} />
           <Route path="/ats" element={<PrivateRoute><ATSAnalyser /></PrivateRoute>} />
           <Route path="/templates" element={<PrivateRoute><Templates /></PrivateRoute>} />
-          <Route path="/upgrade" element={<Upgrade />} />
+         
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
